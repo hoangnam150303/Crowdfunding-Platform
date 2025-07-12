@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 contract Crowdfunding {
-    struct Campaign{
+    struct Campaign {
         address owner;
         string title;
         string description;
@@ -11,7 +11,58 @@ contract Crowdfunding {
         uint256 amountCollected;
         string image;
         address[] donators;
-        uint256 donations;
+        uint256[] donations;
     }
-    mapping(address => Campaign) public campaigns;
+    mapping(uint256 => Campaign) public campaigns;
+    uint256 public numberOfCampaigns = 0;
+
+    function createCampaign(
+        address _owner,
+        string memory _title,
+        string memory _description,
+        uint256 _target,
+        uint256 _deadline,
+        string memory _image
+    ) public returns (uint256) {
+        Campaign storage campaign = campaigns[numberOfCampaigns];
+
+        require(
+            campaign.deadline < block.timestamp,
+            "Campaign deadline must be in the future"
+        );
+        campaign.owner = _owner;
+        campaign.title = _title;
+        campaign.description = _description;
+        campaign.target = _target;
+        campaign.deadline = _deadline;
+        campaign.amountCollected = 0;
+        campaign.image = _image;
+        numberOfCampaigns++;
+        return numberOfCampaigns;
+    }
+
+    function donateCampaign(uint256 _id) public payable {
+        uint256 amount = msg.value;
+        Campaign storage campaign = campaigns[_id];
+        campaign.donators.push(msg.sender);
+        campaign.donations.push(amount);
+        (bool sent, ) = payable(campaign.owner).call{value: amount}("");
+        if (sent) {
+            campaign.amountCollected = campaign.amountCollected + amount;
+        }
+    }
+
+    function getDonators(uint256 _id) view public returns (address[] memory, uint256[] memory) {
+        return (campaigns[_id].donators, campaigns[_id].donations);
+    }
+
+    function getCampaign() view public returns (Campaign[] memory) {
+        Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
+
+        for(uint256 i = 0; i < numberOfCampaigns; i++) {
+          Campaign storage item = campaigns[i];
+          allCampaigns[i] = item;
+        }
+        return allCampaigns;
+    }
 }
