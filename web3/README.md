@@ -35,10 +35,12 @@ yarn deploy
 > [!IMPORTANT]
 > This requires a secret key to make it work. Get your secret key [here](https://thirdweb.com/dashboard/settings/api-keys).
 > Pass your secret key as a value after `-k` flag.
+>
 > ```bash
 > npm run deploy -- -k <your-secret-key>
 > # or
 > yarn deploy -k <your-secret-key>
+> ```
 
 ## Releasing Contracts
 
@@ -53,3 +55,5 @@ yarn release
 ## Join our Discord!
 
 For any questions, suggestions, join our discord at [https://discord.gg/thirdweb](https://discord.gg/thirdweb).
+
+npx hardhat run .\scripts\deploy.js --network localhost
