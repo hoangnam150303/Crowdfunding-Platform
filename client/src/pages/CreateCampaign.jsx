@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import bitcoin from "../assets/bitcoin.svg";
 import { CustomButton, FormField } from "../components";
 import { checkIfImage } from "../utils";
-
+import { useStateContext } from "../context";
 const CreateCampaign = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState();
@@ -16,10 +16,29 @@ const CreateCampaign = () => {
     deadline: "",
     image: "",
   });
+  const { createCampaign } = useStateContext();
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.prevenDefault();
+    checkIfImage(form.image, async (exists) => {
+      if (exists) {
+        setIsLoading(true);
+        await createCampaign({
+          ...form,
+          target: ethers.utils.parseUnits(form.target, 18),
+        });
+        setIsLoading(false);
+        navigate("/");
+      } else {
+        alert("Provide valid image url");
+        setForm({ ...form, image: "" });
+      }
+    });
+
+    console.log(form);
+  };
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
       {isLoading && "Loader..."}
@@ -100,13 +119,22 @@ const CreateCampaign = () => {
               handleFormFieldChange("deadline", e);
             }}
           />
-          <div className="flex justify-center items-center mt-[40px]">
-            <CustomButton
-              btnType="submit"
-              title="Submit new campaign"
-              style="bg-violet-700"
-            />
-          </div>
+        </div>
+        <FormField
+          labelName="Campaign Image *"
+          placeHolder="Place image URL of your campaign"
+          inputType="url"
+          value={form.image}
+          handleChange={(e) => {
+            handleFormFieldChange("image", e);
+          }}
+        />
+        <div className="flex justify-center items-center mt-[40px]">
+          <CustomButton
+            btnType="submit"
+            title="Submit new campaign"
+            style="bg-violet-700"
+          />
         </div>
       </form>
     </div>
