@@ -5,11 +5,13 @@ import search from "../assets/search.svg";
 import logo_crowdfunding from "../assets/logo_crowdfunding.png";
 import menu from "../assets/menu.svg";
 import { navlinks } from "../constants";
+import { useStateContext } from "../context";
 const NavBar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const address = "Oxabc";
+  const { connectWithMetamask, address } = useStateContext();
+
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
       <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
@@ -33,7 +35,7 @@ const NavBar = () => {
           style={address ? "bg-violet-700" : "bg-sky-700"}
           handleClick={() => {
             if (address) navigate("create-campaign");
-            else "connect()";
+            else connectWithMetamask();
           }}
         />
         <Link to="/profile">
@@ -104,7 +106,7 @@ const NavBar = () => {
               style={address ? "bg-violet-700" : "bg-sky-700"}
               handleClick={() => {
                 if (address) navigate("create-campaign");
-                else "connect()";
+                else connectWithMetamask();
               }}
             />
           </div>
