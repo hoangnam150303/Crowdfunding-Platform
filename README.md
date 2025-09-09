@@ -113,6 +113,10 @@ Collections:
 - **Frontend:**
   ```bash
   cd frontend
+
+  cd client
+  cd server\api_crowdfunding
+
   npm install
   npm run dev
   ```
