@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import bitcoin from "../assets/bitcoin.svg";
 import { CustomButton, FormField } from "../components";
 import { checkIfImage } from "../utils";
-import { useStateContext } from "../context";
+
 const CreateCampaign = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState();
@@ -16,7 +16,7 @@ const CreateCampaign = () => {
     deadline: "",
     image: "",
   });
-  const { createCampaign } = useStateContext();
+
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
@@ -25,10 +25,10 @@ const CreateCampaign = () => {
     checkIfImage(form.image, async (exists) => {
       if (exists) {
         setIsLoading(true);
-        await createCampaign({
-          ...form,
-          target: ethers.utils.parseUnits(form.target, 18),
-        });
+        // await createCampaign({
+        //   ...form,
+        //   target: ethers.utils.parseUnits(form.target, 18),
+        // });
         setIsLoading(false);
         navigate("/");
       } else {

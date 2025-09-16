@@ -1,19 +1,30 @@
+// NavBar.tsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CustomButton } from "./";
+import { CustomButton, Login } from "./";
 import search from "../assets/search.svg";
 import logo_crowdfunding from "../assets/logo_crowdfunding.png";
 import menu from "../assets/menu.svg";
 import { navlinks } from "../constants";
-import { useStateContext } from "../context";
+
 const NavBar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const { connectWithMetamask, address } = useStateContext();
+  const [showLogin, setShowLogin] = useState(false);
+  const address = ""; // TODO: thay bằng logic thực
+
+  const onConnectClick = () => {
+    if (address) {
+      navigate("create-campaign");
+    } else {
+      setShowLogin(true);
+    }
+  };
 
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
+      {/* search */}
       <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
         <input
           type="text"
@@ -28,15 +39,14 @@ const NavBar = () => {
           />
         </div>
       </div>
+
+      {/* desktop actions */}
       <div className="sm:flex hidden flex-row justify-end gap-4">
         <CustomButton
           btnType="button"
           title={address ? "Create a campaign" : "Connect"}
           style={address ? "bg-violet-700" : "bg-sky-700"}
-          handleClick={() => {
-            if (address) navigate("create-campaign");
-            else connectWithMetamask();
-          }}
+          handleClick={onConnectClick}
         />
         <Link to="/profile">
           <div className="w-[52px] h-[52px] rounded-full bg-[#2c2f32] flex justify-center items-center cursor-pointer">
@@ -48,7 +58,8 @@ const NavBar = () => {
           </div>
         </Link>
       </div>
-      {/* Small screen navigation */}
+
+      {/* mobile nav */}
       <div className="sm:hidden flex justify-between items-center relative">
         <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
           <img
@@ -65,9 +76,9 @@ const NavBar = () => {
         />
         <div
           className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4
-          ${
-            !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0"
-          } transition-all duration-700 cursor-pointer`}
+            ${
+              !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0"
+            } transition-all duration-700 cursor-pointer`}
         >
           <ul className="mb-4">
             {navlinks.map((link) => (
@@ -91,27 +102,40 @@ const NavBar = () => {
                 />
                 <p
                   className={`ml-[20px] font-epilogue font-semibold text-[14px] ${
-                    isActive === link.name ? "text-violet-700" : "text-[#808191"
+                    isActive === link.name
+                      ? "text-violet-700"
+                      : "text-[#808191]"
                   }`}
                 >
-                  {link.name}{" "}
+                  {link.name}
                 </p>
               </li>
             ))}
           </ul>
-          <div className="flex mx-4 ">
+          <div className="flex mx-4">
             <CustomButton
               btnType="button"
               title={address ? "Create a campaign" : "Connect"}
               style={address ? "bg-violet-700" : "bg-sky-700"}
-              handleClick={() => {
-                if (address) navigate("create-campaign");
-                else connectWithMetamask();
-              }}
+              handleClick={onConnectClick}
             />
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <Login
+        open={showLogin}
+        onClose={() => setShowLogin(false)}
+        onSubmit={async ({ email, password }) => {
+          // TODO: gọi API đăng nhập
+          // await api.login({ email, password });
+          setShowLogin(false);
+        }}
+        onGoogleLogin={() => {
+          // TODO: flow Google OAuth
+        }}
+      />
     </div>
   );
 };
