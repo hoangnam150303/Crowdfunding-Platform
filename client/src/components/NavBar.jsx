@@ -12,7 +12,7 @@ const NavBar = () => {
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const address = ""; // TODO: thay bằng logic thực
+  const address = ""; 
 
   const onConnectClick = () => {
     if (address) {
@@ -21,7 +21,6 @@ const NavBar = () => {
       setShowLogin(true);
     }
   };
-
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
       {/* search */}
