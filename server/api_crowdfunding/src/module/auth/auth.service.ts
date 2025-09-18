@@ -16,21 +16,29 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string) {
-    const user = await this.usersService.findByEmail(email);
-    if (user.isActive === false)
-      throw new BadRequestException('Account is not active');
-    if (!user) return null; // kiểm tra null trước
-    const isValid = await comparePasswordHelper(pass, user.password);
-    return isValid ? user : null;
+    try {
+      const user = await this.usersService.findByEmail(email);
+      if (user.isActive === false)
+        throw new BadRequestException('Account is not active');
+      if (!user) return null; // kiểm tra null trước
+      const isValid = await comparePasswordHelper(pass, user.password);
+      return isValid ? user : null;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async login(user: any) {
-    if (!user) throw new UnauthorizedException('Invalid credentials'); // thêm guard rail
-    const payload = {
-      email: user.email,
-      sub: user._id?.toString?.() ?? user._id,
-    };
-    return { access_token: this.jwtService.sign(payload) };
+    try {
+      if (!user) throw new UnauthorizedException('Invalid credentials'); // thêm guard rail
+      const payload = {
+        email: user.email,
+        sub: user._id?.toString?.() ?? user._id,
+      };
+      return { access_token: this.jwtService.sign(payload) };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async register(registerDto: CreateAuthDto) {
@@ -56,6 +64,18 @@ export class AuthService {
     };
 
     return { accessToken: this.jwtService.sign(payload) };
+  }
+  async loginGoogle(userGoogle: any) {
+    const { email, name, avatar } = userGoogle;
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      await this.usersService.createUserOAuth({ email, name, avatar });
+    } // thêm guard rail
+    const payload = {
+      email: user.email,
+      sub: user._id?.toString?.() ?? user._id,
+    };
+    return { access_token: this.jwtService.sign(payload) };
   }
   /**
    *

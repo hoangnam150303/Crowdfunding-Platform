@@ -4,10 +4,11 @@ import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './passport/local.strategy';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './passport/jwt.strategy';
 import { GoogleStrategy } from './passport/google.strategy';
+import googleOauthConfig from '@/config/google-oauth.config';
 @Module({
   imports: [
     UsersModule,
@@ -22,9 +23,10 @@ import { GoogleStrategy } from './passport/google.strategy';
       inject: [ConfigService],
     }),
     PassportModule,
+    ConfigModule.forFeature(googleOauthConfig),
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy,GoogleStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
 })
 export class AuthModule {}
