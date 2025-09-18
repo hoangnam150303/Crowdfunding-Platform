@@ -51,16 +51,18 @@ export class UsersService {
   }
   async createUserOAuth(userDto: any) {
     try {
+      console.log(userDto);
       const { email, name, avatar } = userDto;
       const emailValid = await this.isMailExist(email);
       if (emailValid) throw new BadRequestException('Email already exists');
-      const user = await this.userModel.create({
+      await this.userModel.create({
         name,
         email,
         avatar,
         isActive: true,
         accountType: 'GOOGLE',
       });
+      return 'success';
     } catch (error) {
       return error;
     }

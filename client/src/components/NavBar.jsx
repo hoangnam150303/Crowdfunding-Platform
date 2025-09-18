@@ -6,19 +6,28 @@ import search from "../assets/search.svg";
 import logo_crowdfunding from "../assets/logo_crowdfunding.png";
 import menu from "../assets/menu.svg";
 import { navlinks } from "../constants";
+import authApi from "../hooks/auth.api";
+import { useAuth } from "../context/auth.context";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState("dashboard");
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const address = ""; 
+  const { user } = useAuth();
 
   const onConnectClick = () => {
-    if (address) {
+    if (user) {
       navigate("create-campaign");
     } else {
       setShowLogin(true);
+    }
+  };
+  const loginWithGoogle = async () => {
+    try {
+      await authApi.postLoginWithGoogle();
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -43,8 +52,8 @@ const NavBar = () => {
       <div className="sm:flex hidden flex-row justify-end gap-4">
         <CustomButton
           btnType="button"
-          title={address ? "Create a campaign" : "Connect"}
-          style={address ? "bg-violet-700" : "bg-sky-700"}
+          title={user ? "Create a campaign" : "Sign In"}
+          style={user ? "bg-violet-700" : "bg-sky-700"}
           handleClick={onConnectClick}
         />
         <Link to="/profile">
@@ -114,8 +123,8 @@ const NavBar = () => {
           <div className="flex mx-4">
             <CustomButton
               btnType="button"
-              title={address ? "Create a campaign" : "Connect"}
-              style={address ? "bg-violet-700" : "bg-sky-700"}
+              title={user ? "Create a campaign" : "Connect"}
+              style={user ? "bg-violet-700" : "bg-sky-700"}
               handleClick={onConnectClick}
             />
           </div>
@@ -127,12 +136,18 @@ const NavBar = () => {
         open={showLogin}
         onClose={() => setShowLogin(false)}
         onSubmit={async ({ email, password }) => {
-          // TODO: gọi API đăng nhập
-          // await api.login({ email, password });
+          try {
+            const data = { email, password };
+            const res = await authApi.postLoginLocal(data);
+            console.log("Login response:", res);
+            // Handle successful login (e.g., store user, update UI)
+          } catch (error) {
+            console.log(error);
+          }
           setShowLogin(false);
         }}
         onGoogleLogin={() => {
-          // TODO: flow Google OAuth
+          loginWithGoogle();
         }}
       />
     </div>

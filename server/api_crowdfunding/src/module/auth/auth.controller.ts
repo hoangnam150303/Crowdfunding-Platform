@@ -36,8 +36,21 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   @Public()
-  async googleCallback(@Req() req: Request) {
-    await this.authService.validateGoogleLogin((req as any).user);
+  async googleCallback(@Req() req, @Res() res) {
+    const response = await this.authService.loginGoogle(req.user);
+    res.cookie('access_token', response.access_token, {
+      httpOnly: true,
+      sameSite: 'lax', // dev localhost
+      secure: false, // dev; production => true + HTTPS
+      maxAge: 7 * 24 * 60 * 60 * 1000, // ví dụ 7 ngày
+      path: '/', // gửi cho mọi route API của backend
+    });
+    res.redirect(`http://localhost:5173`);
+  }
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Request() req) {
+    return req.user;
   }
   @Patch('active')
   @Public()
