@@ -1,39 +1,42 @@
-import dashboard from "../assets/dashboard.svg";
-import payment from "../assets/payment.svg";
-import withdraw from "../assets/withdraw.svg";
-import profile from "../assets/profile.svg";
-import speaker from "../assets/speaker.svg";
-import logout from "../assets/logout.svg";
+// navlinks.tsx
+import {
+  LayoutDashboard,
+  Megaphone,
+  CreditCard,
+  Wallet,
+  User,
+  LogOut,
+} from "lucide-react";
 
 export const navlinks = [
   {
     name: "dashboard",
-    imageUrl: dashboard,
+    icon: LayoutDashboard, 
     link: "/",
   },
   {
     name: "campaign",
-    imageUrl: speaker,
+    icon: Megaphone,
     link: "/create-campaign",
   },
   {
     name: "payment",
-    imageUrl: payment,
+    icon: CreditCard,
     link: "/",
   },
   {
     name: "withdraw",
-    imageUrl: withdraw,
+    icon: Wallet,
     link: "/",
   },
   {
     name: "profile",
-    imageUrl: profile,
+    icon: User,
     link: "/profile",
   },
   {
     name: "logout",
-    imageUrl: logout,
+    icon: LogOut,
     link: "/",
   },
 ];

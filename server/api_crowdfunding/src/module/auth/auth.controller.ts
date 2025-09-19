@@ -18,9 +18,14 @@ import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { Public } from '@/decorators/customize';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { GoogleAuthGuard } from './passport/google-auth.guard';
+import { ConfigService } from '@nestjs/config';
+
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
@@ -36,7 +41,8 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
   @Public()
-  async googleCallback(@Req() req, @Res() res) {
+  async googleCallback(@Req() req, @Res() res,@Req() request:Request) {
+    console.log(req.cookies)
     const response = await this.authService.loginGoogle(req.user);
     res.cookie('access_token', response.access_token, {
       httpOnly: true,
@@ -45,7 +51,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // ví dụ 7 ngày
       path: '/', // gửi cho mọi route API của backend
     });
-    res.redirect(`http://localhost:5173`);
+    res.redirect(this.configService.get('FE_URL'));
   }
   @Get('me')
   @UseGuards(JwtAuthGuard)

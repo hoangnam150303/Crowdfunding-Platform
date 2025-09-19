@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CustomButton, Login } from "./";
-import search from "../assets/search.svg";
-import logo_crowdfunding from "../assets/logo_crowdfunding.png";
+import { Search } from "lucide-react";
 import menu from "../assets/menu.svg";
+import logo_crowdfunding from "../assets/logo_crowdfunding.png"; // ✅ THÊM LẠI
 import { navlinks } from "../constants";
 import authApi from "../hooks/auth.api";
 import { useAuth } from "../context/auth.context";
@@ -17,12 +17,10 @@ const NavBar = () => {
   const { user } = useAuth();
 
   const onConnectClick = () => {
-    if (user) {
-      navigate("create-campaign");
-    } else {
-      setShowLogin(true);
-    }
+    if (user) navigate("create-campaign");
+    else setShowLogin(true);
   };
+
   const loginWithGoogle = async () => {
     try {
       await authApi.postLoginWithGoogle();
@@ -30,22 +28,22 @@ const NavBar = () => {
       console.log(error);
     }
   };
+
   return (
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
       {/* search */}
-      <div className="lg:flex-1 flex flex-row max-w-[458px] py-2 pl-4 pr-2 h-[52px] bg-[#1c1c24] rounded-[100px]">
+      <div className="lg:flex-1 flex flex-row max-w-[458px] h-[52px] bg-[#1c1c24] rounded-full overflow-hidden">
         <input
           type="text"
           placeholder="Search for campaigns"
-          className="flex w-full font-epilogue font-normal text-[14px] placeholder:text-[#4b5264] text-white bg-transparent outline-none"
+          className="flex-1 px-4 font-epilogue font-normal text-sm placeholder:text-[#4b5264] text-white bg-transparent outline-none"
         />
-        <div className="w-[72px] h-full rounded-[20px] bg-violet-700 flex justify-center items-center cursor-pointer">
-          <img
-            src={search}
-            alt="search"
-            className="w-[15px] h-[15px] object-contain"
-          />
-        </div>
+        <button
+          type="button"
+          className="w-[52px] h-full flex items-center justify-center rounded-full hover:bg-stone-700 transition-colors"
+        >
+          <Search className="w-5 h-5 text-white" />
+        </button>
       </div>
 
       {/* desktop actions */}
@@ -53,7 +51,7 @@ const NavBar = () => {
         <CustomButton
           btnType="button"
           title={user ? "Create a campaign" : "Sign In"}
-          style={user ? "bg-violet-700" : "bg-sky-700"}
+          style={user ? "bg-stone-700" : "bg-stone-500"}
           handleClick={onConnectClick}
         />
         <Link to="/profile">
@@ -83,10 +81,9 @@ const NavBar = () => {
           onClick={() => setToggleDrawer((prev) => !prev)}
         />
         <div
-          className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4
-            ${
-              !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0"
-            } transition-all duration-700 cursor-pointer`}
+          className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10 shadow-secondary py-4 ${
+            !toggleDrawer ? "-translate-y-[100vh]" : "translate-y-0"
+          } transition-all duration-700 cursor-pointer`}
         >
           <ul className="mb-4">
             {navlinks.map((link) => (
@@ -101,6 +98,7 @@ const NavBar = () => {
                   navigate(link.link);
                 }}
               >
+                {/* Nếu đã chuyển navlinks sang lucide-react, thay img bằng <link.icon /> */}
                 <img
                   src={link.imageUrl}
                   alt={link.name}
@@ -137,18 +135,14 @@ const NavBar = () => {
         onClose={() => setShowLogin(false)}
         onSubmit={async ({ email, password }) => {
           try {
-            const data = { email, password };
-            const res = await authApi.postLoginLocal(data);
+            const res = await authApi.postLoginLocal({ email, password });
             console.log("Login response:", res);
-            // Handle successful login (e.g., store user, update UI)
           } catch (error) {
             console.log(error);
           }
           setShowLogin(false);
         }}
-        onGoogleLogin={() => {
-          loginWithGoogle();
-        }}
+        onGoogleLogin={loginWithGoogle}
       />
     </div>
   );

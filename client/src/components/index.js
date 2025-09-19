@@ -3,3 +3,4 @@ export { default as SideBar } from "./SideBar";
 export { default as CustomButton } from "./CustomButton";
 export { default as FormField } from "./FormField";
 export { default as Login } from "./LoginModal";
+export { default as Register } from "./RegisterModal";
