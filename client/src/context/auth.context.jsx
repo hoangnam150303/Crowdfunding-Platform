@@ -1,16 +1,17 @@
-import {createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import authApi from "../hooks/auth.api";
 
 export const AuthContext = createContext(null);
 
-export const AuthProvider = ({ Children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const getUser = async () => {
     try {
       const res = await authApi.getUser();
-      console.log(res);
+      setUser(res.data.userId);
+
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   };
   useEffect(() => {
@@ -18,7 +19,7 @@ export const AuthProvider = ({ Children }) => {
   }, []);
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      {Children}
+      {children}
     </AuthContext.Provider>
   );
 };

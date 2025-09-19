@@ -1,9 +1,9 @@
-// LoginModal.tsx
 import React, { useEffect, useRef, useState } from "react";
+import { Register } from ".";
 
 export default function LoginModal({ open, onClose, onSubmit, onGoogleLogin }) {
   const dialogRef = useRef(null);
-
+  const [showRegister, setShowRegister] = useState(false);
   useEffect(() => {
     function onKey(e) {
       if (e.key === "Escape") onClose?.();
@@ -126,13 +126,18 @@ export default function LoginModal({ open, onClose, onSubmit, onGoogleLogin }) {
 
             <p className="text-center text-sm text-neutral-600 dark:text-neutral-300">
               Don’t have an account?{" "}
-              <a
-                href="/register"
-                className="font-medium text-blue-600 hover:underline"
+              <button
+                type="button"
+                onClick={() => setShowRegister(true)}
+                className="text-blue-600 hover:underline dark:text-blue-400"
               >
-                Register
-              </a>
+                Sign up
+              </button>
             </p>
+            <Register
+              open={showRegister}
+              onClose={() => setShowRegister(false)}
+            />
           </div>
         </form>
       </div>

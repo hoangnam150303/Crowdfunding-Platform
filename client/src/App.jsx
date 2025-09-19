@@ -5,7 +5,7 @@ import { NavBar, SideBar } from "./components";
 
 const App = () => {
   return (
-    <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
+    <div className="relative sm:-8 p-4 bg-stone-800 min-h-screen flex flex-row">
       <div className="sm:flex hidden mr-10 relative">
         <SideBar />
       </div>
@@ -16,7 +16,6 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-campaign" element={<CreateCampaign />} />
           <Route path="/campaign-details/:id" element={<CampaignDetail />} />
-
         </Routes>
       </div>
     </div>

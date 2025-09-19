@@ -84,7 +84,7 @@ const CreateCampaign = () => {
             handleFormFieldChange("description", e);
           }}
         />
-        <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
+        <div className="w-full flex justify-start items-center p-4 bg-stone-400 h-[120px] rounded-[10px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -103,7 +103,7 @@ const CreateCampaign = () => {
         <div className="flex flex-wrap gap-[40px]">
           <FormField
             labelName="Goal *"
-            placeHolder="ETH 0.50"
+            placeHolder="100$"
             inputType="text"
             value={form.target}
             handleChange={(e) => {
